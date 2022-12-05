@@ -16,13 +16,15 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 import '../css/widget.css';
 
 const deserialize_numpy_array = (data: any, manager?: IWidgetManager) => {
-  if(data == null)
-      return null;
-  console.log("binary array")
-  // window.last_data = data
+  if(data == null) {
+    return null
+  }
   var ar = new Float32Array(data.data.buffer)
-  // window.last_array = ar
   return {data:ar, shape:data.shape, nested:data.nested}
+}
+
+function serialize_numpy_array(data: any, model?: DOMWidgetModel) {
+  return data;//[0,9]
 }
 
 export class ExampleModel extends DOMWidgetModel {
@@ -42,8 +44,9 @@ export class ExampleModel extends DOMWidgetModel {
   static serializers: ISerializers = {
     ...DOMWidgetModel.serializers,
     // Add any extra serializers here
-    fuck: {
-      deserialize: deserialize_numpy_array
+    particle_positions: {
+      deserialize: deserialize_numpy_array,
+      serialize: serialize_numpy_array
     }
   };
 
@@ -81,17 +84,16 @@ export class ExampleView extends DOMWidgetView {
 
     this.value_changed();
     this.model.on('change:value', this.value_changed, this);
-    this.model.on('change:fuck', this.fuck_changed, this);
+    this.model.on('change:particle_positions', this.particle_positions_changed, this);
   }
 
   value_changed() {
     this.el.textContent = this.model.get('value');
   }
 
-  fuck_changed() {
-    console.log("Yeah did it ")
-    const particlePositions = this.model.get('fuck').data;
-    // console.log("What did we   get here ", particlePositions)
+  particle_positions_changed() {
+    const particlePositionsData = this.model.get('particle_positions');
+    const particlePositions = particlePositionsData.data
     this.particles.positions.set(particlePositions)
     this.particles.count = particlePositions.length / 3
     this.particles.markNeedsUpdate()
