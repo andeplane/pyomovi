@@ -7,6 +7,8 @@ import {
   ISerializers,
 } from '@jupyter-widgets/base';
 
+import * as OMOVI from 'omovi'
+
 import { MODULE_NAME, MODULE_VERSION } from './version';
 
 // Import the CSS
@@ -42,6 +44,23 @@ export class ExampleModel extends DOMWidgetModel {
 export class ExampleView extends DOMWidgetView {
   render() {
     this.el.classList.add('custom-widget');
+    var z = document.createElement('p'); // is a node
+    z.innerHTML = 'fuck ass'
+    this.el.appendChild(z)
+
+    setTimeout(() => {
+      const visualizer = new OMOVI.Visualizer({domElement: this.el})
+      const particles = new OMOVI.Particles(1000000)
+      for (let i = 0; i < 1e6; i++) {
+        particles.add(
+          100 * Math.random(),
+          100 * Math.random(),
+          100 * Math.random(),
+          i, 1)
+      }
+      visualizer.add(particles)
+    }, 500)
+
 
     this.value_changed();
     this.model.on('change:value', this.value_changed, this);
