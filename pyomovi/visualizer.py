@@ -33,13 +33,13 @@ def binary_to_array(value, obj=None):
 
 array_binary_serialization = dict(to_json=array_to_binary, from_json=binary_to_array)
 
-class ExampleWidget(DOMWidget):
+class Visualizer(DOMWidget):
     """TODO: Add docstring here
     """
-    _model_name = Unicode('ExampleModel').tag(sync=True)
+    _model_name = Unicode('VisualizerModel').tag(sync=True)
     _model_module = Unicode(module_name).tag(sync=True)
     _model_module_version = Unicode(module_version).tag(sync=True)
-    _view_name = Unicode('ExampleView').tag(sync=True)
+    _view_name = Unicode('VisualizerView').tag(sync=True)
     _view_module = Unicode(module_name).tag(sync=True)
     _view_module_version = Unicode(module_version).tag(sync=True)
 

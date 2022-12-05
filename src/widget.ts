@@ -27,17 +27,16 @@ function serialize_numpy_array(data: any, model?: DOMWidgetModel) {
   return data;//[0,9]
 }
 
-export class ExampleModel extends DOMWidgetModel {
+export class VisualizerModel extends DOMWidgetModel {
   defaults() {
     return {
       ...super.defaults(),
-      _model_name: ExampleModel.model_name,
-      _model_module: ExampleModel.model_module,
-      _model_module_version: ExampleModel.model_module_version,
-      _view_name: ExampleModel.view_name,
-      _view_module: ExampleModel.view_module,
-      _view_module_version: ExampleModel.view_module_version,
-      value: 'Hello World',
+      _model_name: VisualizerModel.model_name,
+      _model_module: VisualizerModel.model_module,
+      _model_module_version: VisualizerModel.model_module_version,
+      _view_name: VisualizerModel.view_name,
+      _view_module: VisualizerModel.view_module,
+      _view_module_version: VisualizerModel.view_module_version,
     };
   }
 
@@ -50,15 +49,15 @@ export class ExampleModel extends DOMWidgetModel {
     }
   };
 
-  static model_name = 'ExampleModel';
+  static model_name = 'OMOVIModel';
   static model_module = MODULE_NAME;
   static model_module_version = MODULE_VERSION;
-  static view_name = 'ExampleView'; // Set to null if no view
+  static view_name = 'OMOVIView'; // Set to null if no view
   static view_module = MODULE_NAME; // Set to null if no view
   static view_module_version = MODULE_VERSION;
 }
 
-export class ExampleView extends DOMWidgetView {
+export class VisualizerView extends DOMWidgetView {
   visualizer: OMOVI.Visualizer
   particles: OMOVI.Particles
   
@@ -84,7 +83,6 @@ export class ExampleView extends DOMWidgetView {
     }, 500)
 
 
-    this.value_changed();
     this.model.on('change:particle_positions', this.particle_positions_changed, this);
   }
 
