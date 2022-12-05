@@ -5,6 +5,7 @@ import {
   DOMWidgetModel,
   DOMWidgetView,
   ISerializers,
+  IWidgetManager,
 } from '@jupyter-widgets/base';
 
 import * as OMOVI from 'omovi'
@@ -13,6 +14,16 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 
 // Import the CSS
 import '../css/widget.css';
+
+const deserialize_numpy_array = (data: any, manager?: IWidgetManager) => {
+  if(data == null)
+      return null;
+  console.log("binary array")
+  // window.last_data = data
+  var ar = new Float32Array(data.data.buffer)
+  // window.last_array = ar
+  return {data:ar, shape:data.shape, nested:data.nested}
+}
 
 export class ExampleModel extends DOMWidgetModel {
   defaults() {
@@ -31,6 +42,9 @@ export class ExampleModel extends DOMWidgetModel {
   static serializers: ISerializers = {
     ...DOMWidgetModel.serializers,
     // Add any extra serializers here
+    fuck: {
+      deserialize: deserialize_numpy_array
+    }
   };
 
   static model_name = 'ExampleModel';
@@ -42,6 +56,9 @@ export class ExampleModel extends DOMWidgetModel {
 }
 
 export class ExampleView extends DOMWidgetView {
+  visualizer: OMOVI.Visualizer
+  particles: OMOVI.Particles
+  
   render() {
     this.el.classList.add('custom-widget');
     var z = document.createElement('p'); // is a node
@@ -49,24 +66,34 @@ export class ExampleView extends DOMWidgetView {
     this.el.appendChild(z)
 
     setTimeout(() => {
-      const visualizer = new OMOVI.Visualizer({domElement: this.el})
-      const particles = new OMOVI.Particles(1000000)
-      for (let i = 0; i < 1e6; i++) {
-        particles.add(
-          100 * Math.random(),
-          100 * Math.random(),
-          100 * Math.random(),
-          i, 1)
+      this.visualizer = new OMOVI.Visualizer({domElement: this.el})
+      const N = 1e6
+      this.particles = new OMOVI.Particles(N)
+      for (let i = 0; i < N; i++) {
+        this.particles.indices[i] = i
+        this.particles.types[i] = 1
       }
-      visualizer.add(particles)
+      // @ts-ignore
+      window.particles = this.particles
+      this.visualizer.add(this.particles)
     }, 500)
 
 
     this.value_changed();
     this.model.on('change:value', this.value_changed, this);
+    this.model.on('change:fuck', this.fuck_changed, this);
   }
 
   value_changed() {
     this.el.textContent = this.model.get('value');
+  }
+
+  fuck_changed() {
+    console.log("Yeah did it ")
+    const particlePositions = this.model.get('fuck').data;
+    // console.log("What did we   get here ", particlePositions)
+    this.particles.positions.set(particlePositions)
+    this.particles.count = particlePositions.length / 3
+    this.particles.markNeedsUpdate()
   }
 }
