@@ -43,7 +43,6 @@ class ExampleWidget(DOMWidget):
     _view_module = Unicode(module_name).tag(sync=True)
     _view_module_version = Unicode(module_version).tag(sync=True)
 
-    value = Unicode('Hello World').tag(sync=True)
     particle_positions = Array(np.asarray([])).tag(sync=True, **array_binary_serialization)
     # def set_particles(positions, types, indices = None):
 

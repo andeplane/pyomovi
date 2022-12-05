@@ -63,32 +63,29 @@ export class ExampleView extends DOMWidgetView {
   particles: OMOVI.Particles
   
   render() {
-    this.el.classList.add('custom-widget');
-    var z = document.createElement('p'); // is a node
-    z.innerHTML = 'fuck ass'
+    // Need to add something like this. Not sure why.
+    var z = document.createElement('p');
+    z.innerHTML = ''
     this.el.appendChild(z)
 
+    // Seems like we have issues with this if it happens exactly at render call. 
+    // Running 500 ms later works. Must find out why.
     setTimeout(() => {
       this.visualizer = new OMOVI.Visualizer({domElement: this.el})
-      const N = 1e6
-      this.particles = new OMOVI.Particles(N)
-      for (let i = 0; i < N; i++) {
+      const capcity = 1e6
+      this.particles = new OMOVI.Particles(capcity)
+      // set default types and indices
+      for (let i = 0; i < capcity; i++) {
         this.particles.indices[i] = i
         this.particles.types[i] = 1
       }
-      // @ts-ignore
-      window.particles = this.particles
+      
       this.visualizer.add(this.particles)
     }, 500)
 
 
     this.value_changed();
-    this.model.on('change:value', this.value_changed, this);
     this.model.on('change:particle_positions', this.particle_positions_changed, this);
-  }
-
-  value_changed() {
-    this.el.textContent = this.model.get('value');
   }
 
   particle_positions_changed() {
