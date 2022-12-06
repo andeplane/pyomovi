@@ -16,82 +16,79 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 import '../css/widget.css';
 
 const deserialize_numpy_array = (data: any, manager?: IWidgetManager) => {
-  if(data == null)
-      return null;
-  console.log("binary array")
-  // window.last_data = data
+  if(data == null) {
+    return null
+  }
   var ar = new Float32Array(data.data.buffer)
-  // window.last_array = ar
   return {data:ar, shape:data.shape, nested:data.nested}
 }
 
-export class ExampleModel extends DOMWidgetModel {
+function serialize_numpy_array(data: any, model?: DOMWidgetModel) {
+  return data;//[0,9]
+}
+
+export class VisualizerModel extends DOMWidgetModel {
   defaults() {
     return {
       ...super.defaults(),
-      _model_name: ExampleModel.model_name,
-      _model_module: ExampleModel.model_module,
-      _model_module_version: ExampleModel.model_module_version,
-      _view_name: ExampleModel.view_name,
-      _view_module: ExampleModel.view_module,
-      _view_module_version: ExampleModel.view_module_version,
-      value: 'Hello World',
+      _model_name: VisualizerModel.model_name,
+      _model_module: VisualizerModel.model_module,
+      _model_module_version: VisualizerModel.model_module_version,
+      _view_name: VisualizerModel.view_name,
+      _view_module: VisualizerModel.view_module,
+      _view_module_version: VisualizerModel.view_module_version,
     };
   }
 
   static serializers: ISerializers = {
     ...DOMWidgetModel.serializers,
     // Add any extra serializers here
-    fuck: {
-      deserialize: deserialize_numpy_array
+    particle_positions: {
+      deserialize: deserialize_numpy_array,
+      serialize: serialize_numpy_array
     }
   };
 
-  static model_name = 'ExampleModel';
+  static model_name = 'OMOVIModel';
   static model_module = MODULE_NAME;
   static model_module_version = MODULE_VERSION;
-  static view_name = 'ExampleView'; // Set to null if no view
+  static view_name = 'OMOVIView'; // Set to null if no view
   static view_module = MODULE_NAME; // Set to null if no view
   static view_module_version = MODULE_VERSION;
 }
 
-export class ExampleView extends DOMWidgetView {
+export class VisualizerView extends DOMWidgetView {
   visualizer: OMOVI.Visualizer
   particles: OMOVI.Particles
   
   render() {
-    this.el.classList.add('custom-widget');
-    var z = document.createElement('p'); // is a node
-    z.innerHTML = 'fuck ass'
+    // Need to add something like this. Not sure why.
+    var z = document.createElement('p');
+    z.innerHTML = ''
     this.el.appendChild(z)
 
+    // Seems like we have issues with this if it happens exactly at render call. 
+    // Running 500 ms later works. Must find out why.
     setTimeout(() => {
       this.visualizer = new OMOVI.Visualizer({domElement: this.el})
-      const N = 1e6
-      this.particles = new OMOVI.Particles(N)
-      for (let i = 0; i < N; i++) {
+      const capcity = 1e6
+      this.particles = new OMOVI.Particles(capcity)
+      // set default types and indices
+      for (let i = 0; i < capcity; i++) {
         this.particles.indices[i] = i
         this.particles.types[i] = 1
       }
-      // @ts-ignore
-      window.particles = this.particles
+      
       this.visualizer.add(this.particles)
     }, 500)
 
 
-    this.value_changed();
-    this.model.on('change:value', this.value_changed, this);
-    this.model.on('change:fuck', this.fuck_changed, this);
+    this.model.on('change:particle_positions', this.particle_positions_changed, this);
   }
 
-  value_changed() {
-    this.el.textContent = this.model.get('value');
-  }
-
-  fuck_changed() {
-    console.log("Yeah did it ")
-    const particlePositions = this.model.get('fuck').data;
-    // console.log("What did we   get here ", particlePositions)
+  particle_positions_changed() {
+    const particlePositionsData = this.model.get('particle_positions');
+    const particlePositions = particlePositionsData.data
     this.particles.positions.set(particlePositions)
     this.particles.count = particlePositions.length / 3
     this.particles.markNeedsUpdate()
