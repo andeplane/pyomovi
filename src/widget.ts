@@ -96,17 +96,9 @@ export class VisualizerView extends DOMWidgetView {
       this
     );
 
-    this.model.on(
-      'change:particle_colors',
-      this.particle_colors_changed,
-      this
-    );
+    this.model.on('change:particle_colors', this.particle_colors_changed, this);
 
-    this.model.on(
-      'change:particle_radii',
-      this.particle_radii_changed,
-      this
-    );
+    this.model.on('change:particle_radii', this.particle_radii_changed, this);
   }
 
   particle_positions_changed() {
@@ -120,11 +112,11 @@ export class VisualizerView extends DOMWidgetView {
   particle_colors_changed() {
     const particleColorsData = this.model.get('particle_colors');
     const particleColors = particleColorsData.data;
-    for (let i = 0; i < particleColors.length/3; i++) {
-      const r = particleColors[3 * i + 0]
-      const g = particleColors[3 * i + 1]
-      const b = particleColors[3 * i + 2]
-      this.visualizer.setColor(i, {r,g,b})
+    for (let i = 0; i < particleColors.length / 3; i++) {
+      const r = particleColors[3 * i + 0];
+      const g = particleColors[3 * i + 1];
+      const b = particleColors[3 * i + 2];
+      this.visualizer.setColor(i, { r, g, b });
     }
   }
 
@@ -132,8 +124,8 @@ export class VisualizerView extends DOMWidgetView {
     const particleRadiiData = this.model.get('particle_radii');
     const particleRadii = particleRadiiData.data;
     for (let i = 0; i < particleRadii.length; i++) {
-      const radius = particleRadii[i] / 3 
-      this.visualizer.setRadius(i, radius)
+      const radius = particleRadii[i] / 3;
+      this.visualizer.setRadius(i, radius);
     }
   }
 }
