@@ -44,10 +44,10 @@ jobs:
 
       - name: Build OMOVI package
         run: |
-          python -m build .
+          python -m build --outdir dist_py
       
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
-          packages_dir: dist
+          packages_dir: dist_py
