@@ -13,7 +13,6 @@ describe('Visualizer', () => {
     it('should be createable', () => {
       const model = createTestModel(VisualizerModel);
       expect(model).toBeInstanceOf(VisualizerModel);
-      expect(model.get('value')).toEqual('Hello World');
     });
 
     it('should be createable with a value', () => {
