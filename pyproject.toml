@@ -119,3 +119,6 @@ push = true
     'version = "{version}"',
 ]
 
+"pyomovi/_version.py" = [
+    '__version__ = "{version}"'
+]
