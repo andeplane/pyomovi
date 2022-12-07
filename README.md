@@ -21,13 +21,15 @@ the nbextension:
 jupyter nbextension enable --py [--sys-prefix|--user|--system] pyomovi
 ```
 
+## Usage
+
 To create a visualizer window use the following code
 ```python
 import pyomovi
 visualizer = pyomovi.Visualizer()
 visualizer
 ```
-Then in another cell (there is a bug, so the above must be executed 500ms before the next code) run e.g.
+Then in another cell (you must see the visualizer before you can run the following)
 ```
 import numpy as np
 positions = 100 * np.random.rand(1000000, 3)
