@@ -68,7 +68,7 @@ export class VisualizerModel extends DOMWidgetModel {
 export class VisualizerView extends DOMWidgetView {
   visualizer: OMOVI.Visualizer;
   particles: OMOVI.Particles;
-  
+
   render() {
     // Need to add something like this. Not sure why.
     const z = document.createElement('p');
@@ -87,7 +87,7 @@ export class VisualizerView extends DOMWidgetView {
     }
 
     this.visualizer.add(this.particles);
-    
+
     this.model.on(
       'change:particle_positions',
       this.particle_positions_changed,
