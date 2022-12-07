@@ -12,4 +12,4 @@ class OMOVIException(Exception):
 
 class InvalidAtomType(OMOVIException):
     def __init__(self, atom_type: str) -> None:
-        super().__init__(f"Atom type '{atom_type}' is invalid")
+        super().__init__(f"Atom type '{atom_type}' is invalid. See valid atom types with pyomovi.atom_types.keys().")
