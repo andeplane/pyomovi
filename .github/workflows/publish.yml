@@ -42,12 +42,12 @@ jobs:
           make html
           python -m pytest --check-links
 
-      - name: Build OMOVI
+      - name: Build OMOVI package
         run: |
           python -m build .
-
+      
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
-          packages_dir: dist/pyomovi*
+          packages_dir: dist
