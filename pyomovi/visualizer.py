@@ -11,6 +11,7 @@ TODO: Add module docstring
 from ipywidgets import DOMWidget
 from traitlets import Unicode
 from traittypes import Array
+from .exceptions import *
 
 from ._frontend import module_name, module_version
 import numpy as np
@@ -44,7 +45,27 @@ class Visualizer(DOMWidget):
     _view_module_version = Unicode(module_version).tag(sync=True)
 
     particle_positions = Array(np.asarray([])).tag(sync=True, **array_binary_serialization)
-    # def set_particles(positions, types, indices = None):
+    particle_radii = Array(np.asarray([])).tag(sync=True, **array_binary_serialization)
+    particle_colors = Array(np.asarray([])).tag(sync=True, **array_binary_serialization)
+
+    def set_atom_types(self, types):
+        from .atom_types import atom_types
+
+        for type in types:
+            if type not in atom_types:
+                raise InvalidAtomType(type)
+        new_particle_colors = np.zeros(3 * len(types))
+        new_particle_radii = np.zeros(len(types))
+        for i, type in enumerate(types):
+            r = atom_types[type]['color']['r']
+            g = atom_types[type]['color']['g']
+            b = atom_types[type]['color']['b']
+            new_particle_colors[3 * i + 0] = r
+            new_particle_colors[3 * i + 1] = g
+            new_particle_colors[3 * i + 2] = b
+            new_particle_radii[i] = atom_types[type]['radius']/3
+        self.particle_colors = new_particle_colors
+        self.particle_radii = new_particle_radii
 
     
 

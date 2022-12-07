@@ -47,6 +47,14 @@ export class VisualizerModel extends DOMWidgetModel {
       deserialize: deserialize_numpy_array,
       serialize: serialize_numpy_array,
     },
+    particle_colors: {
+      deserialize: deserialize_numpy_array,
+      serialize: serialize_numpy_array,
+    },
+    particle_radii: {
+      deserialize: deserialize_numpy_array,
+      serialize: serialize_numpy_array,
+    },
   };
 
   static model_name = 'OMOVIModel';
@@ -87,6 +95,18 @@ export class VisualizerView extends DOMWidgetView {
       this.particle_positions_changed,
       this
     );
+
+    this.model.on(
+      'change:particle_colors',
+      this.particle_colors_changed,
+      this
+    );
+
+    this.model.on(
+      'change:particle_radii',
+      this.particle_radii_changed,
+      this
+    );
   }
 
   particle_positions_changed() {
@@ -95,5 +115,25 @@ export class VisualizerView extends DOMWidgetView {
     this.particles.positions.set(particlePositions);
     this.particles.count = particlePositions.length / 3;
     this.particles.markNeedsUpdate();
+  }
+
+  particle_colors_changed() {
+    const particleColorsData = this.model.get('particle_colors');
+    const particleColors = particleColorsData.data;
+    for (let i = 0; i < particleColors.length/3; i++) {
+      const r = particleColors[3 * i + 0]
+      const g = particleColors[3 * i + 1]
+      const b = particleColors[3 * i + 2]
+      this.visualizer.setColor(i, {r,g,b})
+    }
+  }
+
+  particle_radii_changed() {
+    const particleRadiiData = this.model.get('particle_radii');
+    const particleRadii = particleRadiiData.data;
+    for (let i = 0; i < particleRadii.length; i++) {
+      const radius = particleRadii[i]
+      this.visualizer.setRadius(i, radius)
+    }
   }
 }
