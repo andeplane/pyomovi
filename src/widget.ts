@@ -68,7 +68,7 @@ export class VisualizerModel extends DOMWidgetModel {
 export class VisualizerView extends DOMWidgetView {
   visualizer: OMOVI.Visualizer;
   particles: OMOVI.Particles;
-
+  
   render() {
     // Need to add something like this. Not sure why.
     const z = document.createElement('p');
@@ -77,19 +77,17 @@ export class VisualizerView extends DOMWidgetView {
 
     // Seems like we have issues with this if it happens exactly at render call.
     // Running 500 ms later works. Must find out why.
-    setTimeout(() => {
-      this.visualizer = new OMOVI.Visualizer({ domElement: this.el });
-      const capcity = 1e6;
-      this.particles = new OMOVI.Particles(capcity);
-      // set default types and indices
-      for (let i = 0; i < capcity; i++) {
-        this.particles.indices[i] = i;
-        this.particles.types[i] = 1;
-      }
+    this.visualizer = new OMOVI.Visualizer({ domElement: this.el });
+    const capcity = 1e6;
+    this.particles = new OMOVI.Particles(capcity);
+    // set default types and indices
+    for (let i = 0; i < capcity; i++) {
+      this.particles.indices[i] = i;
+      this.particles.types[i] = 1;
+    }
 
-      this.visualizer.add(this.particles);
-    }, 500);
-
+    this.visualizer.add(this.particles);
+    
     this.model.on(
       'change:particle_positions',
       this.particle_positions_changed,
