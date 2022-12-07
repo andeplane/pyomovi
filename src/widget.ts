@@ -8,7 +8,7 @@ import {
   IWidgetManager,
 } from '@jupyter-widgets/base';
 
-import * as OMOVI from 'omovi'
+import * as OMOVI from 'omovi';
 
 import { MODULE_NAME, MODULE_VERSION } from './version';
 
@@ -16,15 +16,15 @@ import { MODULE_NAME, MODULE_VERSION } from './version';
 import '../css/widget.css';
 
 const deserialize_numpy_array = (data: any, manager?: IWidgetManager) => {
-  if(data == null) {
-    return null
+  if (data === null) {
+    return null;
   }
-  var ar = new Float32Array(data.data.buffer)
-  return {data:ar, shape:data.shape, nested:data.nested}
-}
+  const ar = new Float32Array(data.data.buffer);
+  return { data: ar, shape: data.shape, nested: data.nested };
+};
 
 function serialize_numpy_array(data: any, model?: DOMWidgetModel) {
-  return data;//[0,9]
+  return data; //[0,9]
 }
 
 export class VisualizerModel extends DOMWidgetModel {
@@ -45,8 +45,8 @@ export class VisualizerModel extends DOMWidgetModel {
     // Add any extra serializers here
     particle_positions: {
       deserialize: deserialize_numpy_array,
-      serialize: serialize_numpy_array
-    }
+      serialize: serialize_numpy_array,
+    },
   };
 
   static model_name = 'OMOVIModel';
@@ -58,39 +58,42 @@ export class VisualizerModel extends DOMWidgetModel {
 }
 
 export class VisualizerView extends DOMWidgetView {
-  visualizer: OMOVI.Visualizer
-  particles: OMOVI.Particles
-  
+  visualizer: OMOVI.Visualizer;
+  particles: OMOVI.Particles;
+
   render() {
     // Need to add something like this. Not sure why.
-    var z = document.createElement('p');
-    z.innerHTML = ''
-    this.el.appendChild(z)
+    const z = document.createElement('p');
+    z.innerHTML = '';
+    this.el.appendChild(z);
 
-    // Seems like we have issues with this if it happens exactly at render call. 
+    // Seems like we have issues with this if it happens exactly at render call.
     // Running 500 ms later works. Must find out why.
     setTimeout(() => {
-      this.visualizer = new OMOVI.Visualizer({domElement: this.el})
-      const capcity = 1e6
-      this.particles = new OMOVI.Particles(capcity)
+      this.visualizer = new OMOVI.Visualizer({ domElement: this.el });
+      const capcity = 1e6;
+      this.particles = new OMOVI.Particles(capcity);
       // set default types and indices
       for (let i = 0; i < capcity; i++) {
-        this.particles.indices[i] = i
-        this.particles.types[i] = 1
+        this.particles.indices[i] = i;
+        this.particles.types[i] = 1;
       }
-      
-      this.visualizer.add(this.particles)
-    }, 500)
 
+      this.visualizer.add(this.particles);
+    }, 500);
 
-    this.model.on('change:particle_positions', this.particle_positions_changed, this);
+    this.model.on(
+      'change:particle_positions',
+      this.particle_positions_changed,
+      this
+    );
   }
 
   particle_positions_changed() {
     const particlePositionsData = this.model.get('particle_positions');
-    const particlePositions = particlePositionsData.data
-    this.particles.positions.set(particlePositions)
-    this.particles.count = particlePositions.length / 3
-    this.particles.markNeedsUpdate()
+    const particlePositions = particlePositionsData.data;
+    this.particles.positions.set(particlePositions);
+    this.particles.count = particlePositions.length / 3;
+    this.particles.markNeedsUpdate();
   }
 }
