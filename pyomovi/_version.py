@@ -4,5 +4,5 @@
 # Copyright (c) Anders Hafreager.
 # Distributed under the terms of the Modified BSD License.
 
-__version__ = "0.7.0"
+__version__ = "0.13.0"
 version_info = tuple(map(lambda x: int(x), __version__.split('.')))
