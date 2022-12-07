@@ -63,7 +63,7 @@ class Visualizer(DOMWidget):
             new_particle_colors[3 * i + 0] = r
             new_particle_colors[3 * i + 1] = g
             new_particle_colors[3 * i + 2] = b
-            new_particle_radii[i] = atom_types[type]['radius']/3
+            new_particle_radii[i] = atom_types[type]['radius']
         self.particle_colors = new_particle_colors
         self.particle_radii = new_particle_radii
 

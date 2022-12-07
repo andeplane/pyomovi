@@ -21,6 +21,33 @@ the nbextension:
 jupyter nbextension enable --py [--sys-prefix|--user|--system] pyomovi
 ```
 
+To create a visualizer window use the following code
+```python
+import pyomovi
+visualizer = pyomovi.Visualizer()
+visualizer
+```
+Then in another cell (there is a bug, so the above must be executed 500ms before the next code) run e.g.
+```
+import numpy as np
+positions = 100 * np.random.rand(1000000, 3)
+visualizer.particle_positions = positions
+```
+to visualize 1 million atoms at random positions. If you want custom coloring and radii, you can
+```
+import numpy as np
+visualizer.particle_positions = np.asarray([[0, 0, 0], [0,2,0], [0,2,2]])
+visualizer.particle_colors = np.asarray([[255, 0, 0], [255, 255, 0], [255,255,255]]) # RGB
+visualizer.particle_radii = np.asarray([1.0, 2.0, 3.0])
+```
+
+You can also set colors and radii using short names of atoms
+```
+import numpy as np
+visualizer.particle_positions = np.asarray([[0, 0, 0], [0,2,0], [0,2,2]])
+visualizer.set_atom_types(['O', 'H', 'H'])
+```
+
 ## Development Installation
 
 Create a dev environment:

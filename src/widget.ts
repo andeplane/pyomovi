@@ -132,7 +132,7 @@ export class VisualizerView extends DOMWidgetView {
     const particleRadiiData = this.model.get('particle_radii');
     const particleRadii = particleRadiiData.data;
     for (let i = 0; i < particleRadii.length; i++) {
-      const radius = particleRadii[i]
+      const radius = particleRadii[i] / 3 
       this.visualizer.setRadius(i, radius)
     }
   }
